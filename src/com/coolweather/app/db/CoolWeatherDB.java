@@ -13,7 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * @author flt
+ * @author fury
  *
  */
 public class CoolWeatherDB {
@@ -34,7 +34,7 @@ public class CoolWeatherDB {
 	 */
 	private CoolWeatherDB(Context context){
 		CoolWeatherOpenHelper dbHelper= new CoolWeatherOpenHelper(context,
-				DB_NAME,null,VERSION);
+				DB_NAME, null, VERSION);
 		db = dbHelper.getWritableDatabase();
 	}
 	/**
@@ -130,7 +130,7 @@ public class CoolWeatherDB {
 		Cursor cursor = db.query("County", null, "city_id = ?", 
 				new String[] { String.valueOf(cityId)}, null, null, null); 
 		//??????????????????????????????????????????????????
-	
+		
 		if(cursor.moveToFirst()){
 			do{
 				County county = new County();
