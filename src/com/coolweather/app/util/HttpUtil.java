@@ -23,8 +23,10 @@ public class HttpUtil {
 					InputStream in = connection.getInputStream();
 					BufferedReader reader = new BufferedReader(
 							new InputStreamReader(in));
+					
 					StringBuilder response = new StringBuilder();
 					String line; //= null;
+					
 					while ((line = reader.readLine()) != null) {
 						response.append(line);
 					}
