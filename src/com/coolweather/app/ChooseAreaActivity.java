@@ -18,15 +18,17 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-public class ChooseAreaActivity extends Activity {
+//implements OnClickListener{
+public class ChooseAreaActivity extends Activity implements OnClickListener{
 	public static final int LEVEL_PROVINCE = 0;
 	public static final int LEVEL_CITY = 1;
 	public static final int LEVEL_COUNTY = 2;
@@ -46,13 +48,17 @@ public class ChooseAreaActivity extends Activity {
 	private Province selectedProvince;
 	private City selectedCity;
 	private int currentLevel;
+	
+	private Button bnt;
+	private boolean isFromWeatherActivity;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		isFromWeatherActivity = getIntent().getBooleanExtra("form_weather_activity", false);
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if(prefs.getBoolean("city_selected", false)) {
+		if(prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
 			Intent intent = new Intent(this, WeatherActivity.class);
 			startActivity(intent);
 			finish();
@@ -64,6 +70,9 @@ public class ChooseAreaActivity extends Activity {
 		
 		listView = (ListView) findViewById(R.id.list_view);
 		titleText = (TextView) findViewById(R.id.title_text); 
+		
+		bnt = (Button) findViewById(R.id.toWeather);
+		bnt.setOnClickListener(this);
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);//++
 		coolWeatherDB = CoolWeatherDB.getInstance(this);
 		
@@ -75,6 +84,13 @@ public class ChooseAreaActivity extends Activity {
 					int position, long id) {
 				if(currentLevel == LEVEL_PROVINCE){
 					selectedProvince = provinceList.get(position);
+					/*
+					String provinceCode = provinceList.get(position).getProvinceCode();
+					Intent intent2 = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+					intent2.putExtra("provinceCode", provinceCode);
+					startActivity(intent2);
+					finish();
+					return;*/
 					queryCities();
 				} else if(currentLevel == LEVEL_CITY){
 					selectedCity = cityList.get(position);
@@ -259,9 +275,27 @@ public class ChooseAreaActivity extends Activity {
 			queryCities();
 		} else if(currentLevel == LEVEL_CITY){
 			queryProvinces();
-		}else if(currentLevel == LEVEL_PROVINCE){
+		} else {
+			if(isFromWeatherActivity){
+				Intent intent = new Intent(this, WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
+		} 
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.toWeather:
+			//String countyCode = "hi";
+			Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+			//intent.putExtra("county_code", countyCode);
+			startActivity(intent);
+			finish();
+			break;
 		}
+		
 	}
 
 	
